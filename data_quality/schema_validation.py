@@ -23,3 +23,5 @@ validate(instance={"name": "John"}, schema=schema)
 
 validate(instance={"name": "John", "age": 30, "job": "Engineer"}, schema=schema)
 # No error, the JSON is valid. By additional fields are allowed.
+
+
