@@ -3,24 +3,6 @@
 # To Do: Add Generators
 # Description: A client class can be used with various functions. Each function does one thing.
 
-"""
-clients = [Client(True), Client(False), Client(True)] 
-
-or
-
-cillian = Client(True, "Cillian")
-matt = Client(False, "Matt")
-emily = Client(True, "Emily")
-oppenheimer_cast = [cillian, matt, emily]
-
-email(cillian)
-email(matt)
-email(emily)
-
-active_clients = get_active_clients(clients)
-email_clients(active_clients)
-
-"""
 
 from typing import List
 
@@ -31,6 +13,7 @@ class Client:
         self.active = active
         self.name = name
 
+# initializing instances of Client class:
 cillian = Client(True, "Cillian")
 matt = Client(False, "Matt")
 emily = Client(True, "Emily")
@@ -45,11 +28,14 @@ def email(client: Client) -> None:
     
 
 def get_active_clients(clients: List[Client]) -> List[Client]:
-    """Filter active clients.
+    """Yield active clients 
+    Turn get_active_clients() into a generator function by using yield
     """
     
     print(f"The following are active")
-    return [client.name for client in clients if client.active]
+    for client in clients:
+        if client.active:
+            yield client.name
 
 
 def email_clients(clients: List[Client]) -> None:
