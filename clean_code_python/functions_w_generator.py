@@ -1,10 +1,4 @@
-# Functions should do one thing
-
-# To Do: Add Generators
-# Description: A client class can be used with various functions. Each function does one thing.
-
-
-from typing import List, Iterator
+from typing import Generator, Iterator 
 
 class Client:
     def __init__(self, active: bool, name: str):
@@ -15,20 +9,18 @@ class Client:
 def email(client: Client) -> None:
     status = "is active" if client.active else "is not active"
     print(f"{client.name} {status}.")
-    
 
-def get_active_clients(clients: List[Client]) -> Iterator[str]:
-    """Yield name of active clients."""
-    return (client.name for client in clients if client.active)
+def active_clients(clients: Iterator[Client]) -> Generator[Client, None, None]:
+    """Only active clients"""
+    return (client for client in clients if client.active)
 
 
-def email_clients(clients: List[Client]) -> None:
+def email_clients(clients: Iterator[Client]) -> None:
     """Send an email to a given list of clients.
     """
-    for client in clients:
+    for client in active_clients(clients):
         email(client)
 
-# initializing instances of Client class:
 if __name__ == "__main__":
     cillian = Client(True, "Cillian")
     matt = Client(False, "Matt")
