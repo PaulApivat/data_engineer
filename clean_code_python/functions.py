@@ -1,9 +1,5 @@
 # Functions should do one thing
 
-# To Do: Add Generators
-# Description: A client class can be used with various functions. Each function does one thing.
-
-
 from typing import List, Iterator
 
 class Client:

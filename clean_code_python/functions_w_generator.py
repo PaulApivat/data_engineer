@@ -1,3 +1,6 @@
+# Functions should do one thing
+# example with generators
+
 from typing import Generator, Iterator 
 
 class Client:
