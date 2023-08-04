@@ -1,4 +1,12 @@
 # Functions should do one thing
+"""
+- Functions should be small
+- Function intendation level should be 1-2
+    - One level of Abstraction per function 
+    - e.g. Mixing level of abstraction (confusing): getHtml()...append("\n")
+- Reading Code from Top to Bottom: The Stepdown Rule
+- Functions should do one thing
+"""
 
 from typing import List, Iterator
 
@@ -8,7 +16,7 @@ class Client:
         self.name = name
 
 
-def email(client: Client) -> None:
+def check_client_status(client: Client) -> None:
     status = "is active" if client.active else "is not active"
     print(f"{client.name} {status}.")
     
@@ -22,7 +30,7 @@ def email_clients(clients: List[Client]) -> None:
     """Send an email to a given list of clients.
     """
     for client in clients:
-        email(client)
+        check_client_status(client)
 
 # initializing instances of Client class:
 if __name__ == "__main__":
