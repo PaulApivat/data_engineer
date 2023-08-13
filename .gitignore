@@ -1,2 +1,8 @@
 # environment
 .env 
+
+# vscode
+.vscode
+
+# pylint
+.pylintrc
