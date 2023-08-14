@@ -15,6 +15,14 @@ Once you put @dataclass above a class, you can use its features like:
 
 @dataclasses don't allow mutable objects (list) for instance variable defaults,
 - must use 'default_factory'
+
+Read-Only Objects: w @dataclass, you can indicate an object is a constant 
+- @dataclass(frozen=True)
+
+Final thoughts, when using @dataclass, think about:
+- what part of the class to encapsulate
+- what part of the class to hide implementation details
+    - Use underscore_ to show when a data attribute is not to be changed. 
 """
 
 
@@ -46,7 +54,7 @@ def default_accessories():
     return [Accessory.AIRCO, Accessory.NAVIGATION]
 
 
-@dataclass
+@dataclass()
 class Vehicle:
     brand: str
     model: str
@@ -54,15 +62,6 @@ class Vehicle:
     license_plate: str = field(default_factory=generate_vehicle_license, init=False)
     accessories: list[Accessory] = field(default_factory=default_accessories)
     fuel_type: FuelType = FuelType.ELECTRIC
-
-    def __post_init__(self):
-        """Another way of setting default values for a dataclass"""
-        self.license_plate = generate_vehicle_license()
-        if self.brand == "Tesla":
-            self.license_plate += "-t"
-
-    def generate_vehicle_license(self):
-        self.license_plate = generate_vehicle_license()
 
     def reserve(self, date: datetime):
         print(f"Vehicle is reserved for {date}.")
@@ -103,6 +102,10 @@ def main() -> None:
         fuel_type=FuelType.PETROL,
         # accessories=[Accessory.NAVIGATION, Accessory.CRUISECONTROL],
     )
+
+    # @dataclass(frozen=True) is Read-Only so bmw cannot change brand
+    # dataclasses.FrozenInstanceError
+    bmw.brand = "New_BMW"
 
     print(tesla)
     print(volkswagen)
