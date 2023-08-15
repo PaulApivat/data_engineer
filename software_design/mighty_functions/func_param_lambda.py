@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Callable
+from functools import partial
 
 
 @dataclass
@@ -19,8 +20,19 @@ def send_email_promotion(
             print(f"{customer.name} is not eligible for promotion.")
 
 
-def is_eligible_for_promotion(customer: Customer) -> bool:
-    return customer.age >= 50
+# demonstrate closures and higher-order function
+def is_eligible_for_promotion(cutoff_age: int = 50) -> Callable[[Customer], bool]:
+    """Defining a function inside another function is a Closure."""
+
+    def is_eligible(customer: Customer) -> bool:
+        return customer.age >= cutoff_age
+
+    return is_eligible
+
+
+# simpler version: Partial functions
+def is_eligible_for_promotion_simple(customer: Customer, cutoff_age: int = 50) -> bool:
+    return customer.age >= cutoff_age
 
 
 def main() -> None:
@@ -35,9 +47,12 @@ def main() -> None:
         Customer("Holly", 60),
         Customer("Iris", 65),
     ]
-    send_email_promotion(customers, is_eligible_for_promotion)
+    send_email_promotion(customers, is_eligible_for_promotion(30))
     print("----Example use of lambda function -----")
     send_email_promotion(customers, lambda customer: customer.age >= 50)
+    print("----Example of Partial functions")
+    is_eligible = partial(is_eligible_for_promotion_simple, cutoff_age=25)
+    send_email_promotion(customers, is_eligible)
 
 
 if __name__ == "__main__":
