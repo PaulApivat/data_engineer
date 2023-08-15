@@ -38,9 +38,9 @@ def main() -> None:
     obj = MyClass(12)
     print(CUSTOMERS)
     print(pure_function(1, 2))
-    print(pure_function.__call__(1, 2))
+    print(pure_function.__call__(1, 2))  # this function has a 'call' method
     print(obj.x)
-    print(obj.__call__())
+    print(obj.__call__())  #
     print(obj())
     print((2).__class__)
 
