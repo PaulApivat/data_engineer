@@ -12,6 +12,7 @@ from typing import Protocol
 # There's also NO reason to have a single Protocl class (Vehicle), we can break up the methods into their own classes
 # By splitting Vechicle class into Rentable & LicenseHolder Protocols, and isolating reserve and renew_license to separate classes
 # instances of these classes no longer _have_ to have both functions
+# e.g., note can comment out renew_license() in Car class. 
 
 
 class Rentable(Protocol):
