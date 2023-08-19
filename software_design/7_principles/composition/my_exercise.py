@@ -23,26 +23,29 @@ class PriceSource(Protocol):
 
 @dataclass
 class DistancePricing:
-    price_per_km: int
+    price_per_km: int = 30
+    num_kms: int = 100
 
     def compute_price(self) -> int:
-        return int(self.price_per_km)
+        return int(self.price_per_km * self.num_kms)
 
 
 @dataclass
 class DailyPricing:
-    price_per_day: int
+    price_per_day: int = 100_00
+    num_days: int = 1
 
     def compute_price(self) -> int:
-        return int(self.price_per_day)
+        return int(self.price_per_day * self.num_days)
 
 
 @dataclass
 class MonthlyPricing:
-    price_per_month: int
+    price_per_month: int = 500_00
+    num_months: int = 1
 
     def compute_price(self) -> int:
-        return int(self.price_per_month)
+        return int(self.price_per_month * self.num_months)
 
 
 @dataclass
@@ -53,8 +56,6 @@ class Vehicle:
     fuel_type: FuelType
     license_plate: str
     reserved: bool
-    number_of_seats: int
-    storage_capacity_litres: int
     price_sources: list[PriceSource] = field(default_factory=list)
 
     def add_price_source(self, price_source: PriceSource):
@@ -64,8 +65,24 @@ class Vehicle:
         return sum(source.compute_price() for source in self.price_sources)
 
 
+@dataclass
+class Car(Vehicle):
+    number_of_seats: int = 5
+    storage_capacity_litres: int = 40
+
+
+@dataclass
+class Truck(Vehicle):
+    cab_style: TruckCabStyle = TruckCabStyle.REGULAR
+
+
+@dataclass
+class Trailer:
+    capacity_m3: int
+
+
 def main():
-    ford = Vehicle(
+    ford = Car(
         brand="Ford",
         model="Fiesta",
         color="red",
@@ -79,14 +96,13 @@ def main():
     ford.add_price_source(DailyPricing(price_per_day=50))
     print(ford)
 
-    tesla = Vehicle(
+    tesla = Car(
         brand="Tesla",
         model="Model 3",
         color="black",
         fuel_type=FuelType.ELECTRIC,
         license_plate="DEF-456",
         reserved=False,
-        # price_per_month=1000,
         number_of_seats=5,
         storage_capacity_litres=300,
     )
