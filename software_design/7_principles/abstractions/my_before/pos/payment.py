@@ -1,7 +1,9 @@
-#from pos.authorization import authorize_google, authorize_robot, authorize_sms
+# from pos.authorization import authorize_google, authorize_robot, authorize_sms
 from pos.data import PaymentStatus
-#from pos.order import Order
+
+# from pos.order import Order
 from typing import Callable, Protocol
+from dataclasses import dataclass
 
 """ First Abstraction: 
 - remove dependency between specific authorization functions and payment processor 
@@ -35,51 +37,60 @@ Solution:
 - create new PaymentProcessor Protocol class w pay() method
     - Bridges authorization and payment method
 - create a different class for each Payment type (can even be in different files )
-""" 
+
+- CreditPaymenntProcessor requires a security_code, since it's a @dataclass, we can set that attribute upon initialization
+"""
 
 AuthorizeFunction = Callable[[], bool]
 
+
 class Payable(Protocol):
-    @property 
+    @property
     def total_price(self) -> int:
         ...
 
     def set_status(self, status: PaymentStatus):
         ...
 
+
 class PaymentProcessor(Protocol):
     def pay(self, payable: Payable, authorize: AuthorizeFunction):
         ...
 
+
 class DebitPaymentProcessor:
     def pay(self, payable: Payable, authorize: AuthorizeFunction):
-        ...
-        # TO BE CONTINUED
-
-class PaymentProcessor:
-    def __init__(self, authorize: AuthorizeFunction):
-            self.authorize = authorize
-
-    def pay_debit(self, payable: Payable) -> None:
-        if not self.authorize():
+        if not authorize():
             raise Exception("Not authorized")
-        print(f"Processing debit payment for amount: ${(payable.total_price / 100):.2f}.")
+        print(
+            f"Processing debit payment for amount: ${(payable.total_price / 100):.2f}."
+        )
         payable.set_status(PaymentStatus.PAID)
 
-    def pay_credit(self, payable: Payable, security_code: str) -> None:
-        if not self.authorize():
+
+@dataclass
+class CreditPaymentProcessor:
+    security_code: str
+
+    def pay(self, payable: Payable, authorize: AuthorizeFunction) -> None:
+        if not authorize():
             raise Exception("Not authorized")
         print(
             f"Processing credit payment for amount: ${(payable.total_price / 100):.2f}."
         )
-        print(f"Verifying security code: {security_code}")
+        print(f"Verifying security code: {self.security_code}")
         payable.set_status(PaymentStatus.PAID)
 
-    def pay_paypal(self, payable: Payable, email_address: str) -> None:
-        if not self.authorize():
+
+@dataclass
+class PayPalPaymentProcessor:
+    email_address: str
+
+    def pay(self, payable: Payable, authorize: AuthorizeFunction) -> None:
+        if not authorize():
             raise Exception("Not authorized")
         print(
             f"Processing PayPal payment for amount: ${(payable.total_price / 100):.2f}."
         )
-        print(f"Using email address: {email_address}")
+        print(f"Using email address: {self.email_address}")
         payable.set_status(PaymentStatus.PAID)
