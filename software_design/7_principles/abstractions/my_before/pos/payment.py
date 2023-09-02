@@ -39,6 +39,9 @@ Solution:
 - create a different class for each Payment type (can even be in different files )
 
 - CreditPaymenntProcessor requires a security_code, since it's a @dataclass, we can set that attribute upon initialization
+
+- AuthorizationFunction is a callable, but only in the main() are things patched together, when importing the different
+authorization.py functions; 
 """
 
 AuthorizeFunction = Callable[[], bool]

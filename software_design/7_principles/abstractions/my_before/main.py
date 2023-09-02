@@ -1,4 +1,4 @@
-from pos.order import Order
+from pos.order import Order, LineItem
 from pos.payment import CreditPaymentProcessor, PayPalPaymentProcessor
 from pos.authorization import authorize_sms, authorize_google, authorize_robot
 
@@ -22,7 +22,7 @@ def main():
 
     print(f"The total price is: ${(order.total_price / 100):.2f}.")
     processor = PayPalPaymentProcessor("paul@gmail.com")
-    processor.pay(order, authorize_google)
+    processor.pay(order, authorize_sms)
 
 
 if __name__ == "__main__":
