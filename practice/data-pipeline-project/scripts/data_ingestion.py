@@ -1,7 +1,7 @@
 import os
 import duckdb
 import requests
-import json
+import pandas as pd
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -22,28 +22,36 @@ print(response)
 if response.status_code == 200:
     # Assuming the API response is in JSON format
     data = response.json()
-    # print(data["result"]["rows"])
+
+    # Transform the JSON data into a DataFrame
+    df = pd.DataFrame(
+        data["result"]["rows"],
+        columns=["datetime", "net_emission_eth", "total_net_emission_eth"],
+    )
 
     # Establish a connection to the DuckDB database
     conn = duckdb.connect("data/bronze/raw_data.db")
 
     # Drop the existing "raw_data" table if it exists
-    conn.execute("DROP TABLE IF EXISTS raw_data")
+    conn.execute("DROP TABLE IF EXISTS eth_emissions")
 
     # Create a DuckDB table with an auto-increment primary key using INTEGER
+    # Create a DuckDB table with the specified column data types
     conn.execute(
         """
-        CREATE TABLE raw_data (
-            id INTEGER PRIMARY KEY,
-            data STRING
+        CREATE TABLE eth_emissions (
+            datetime TIMESTAMP,
+            net_emission_eth FLOAT,
+            total_net_emission_eth FLOAT
         )
     """
     )
 
-    # Insert the retrieved data into the DuckDB table with auto-incrementing ids
-    for idx, item in enumerate(data["result"]["rows"]):
+    # Insert the data from the DataFrame into the DuckDB table
+    for _, row in df.iterrows():
         conn.execute(
-            "INSERT INTO raw_data (id, data) VALUES (?, ?)", (idx + 1, json.dumps(item))
+            "INSERT INTO eth_emissions (datetime, net_emission_eth, total_net_emission_eth) VALUES (?, ?, ?)",
+            (row["datetime"], row["net_emission_eth"], row["total_net_emission_eth"]),
         )
 
     # Close the DuckDB connection
