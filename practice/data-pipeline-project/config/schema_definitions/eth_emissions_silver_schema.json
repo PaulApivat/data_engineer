@@ -1,0 +1,32 @@
+{
+    "type": "object",
+    "properties": {
+      "datetime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "net_emission_eth": {
+        "type": "number"
+      },
+      "total_net_emission_eth": {
+        "type": "number"
+      },
+      "token_symbol": {
+        "type": "string"
+      },
+      "protocol": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string"
+      },
+      "layer": {
+        "type": "string"
+      },
+      "measure": {
+        "type": "string"
+      }
+    },
+    "required": ["datetime", "net_emission_eth", "total_net_emission_eth", "token_symbol", "protocol", "category", "layer", "measure"]
+  }
+  
