@@ -1,0 +1,40 @@
+{
+    "type": "object",
+    "properties": {
+        "datetime": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "total": {
+            "type": "number"
+        },
+        "total_7d": {
+            "type": "number"
+        },
+        "pct_change_total_7d": {
+            "type": "number"
+        },
+        "wk": {
+            "type": "number"
+        },
+        "past_wk_7d": {
+            "type": "number"
+        },
+        "pct_change_past_wk_7d": {
+            "type": "number"
+        },
+        "past_wk_30d": {
+            "type": "number"
+        },
+        "pct_change_past_wk_30d": {
+            "type": "number"
+        },
+        "past_wk_180d": {
+            "type": "number"
+        },
+        "pct_change_past_wk_180d": {
+            "type": "number"
+        }
+    },
+    "required": ["datetime", "total", "total_7d", "pct_change_total_7d", "wk", "past_wk_7d", "pct_change_past_wk_7d", "past_wk_30d", "pct_change_past_wk_30d", "past_wk_180d", "pct_change_past_wk_180d"]
+}
