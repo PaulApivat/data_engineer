@@ -15,6 +15,8 @@ This is a _demo repo_ that shows:
 - exploring different databases and tables with `jupyter notebooks`
 - alternatively, exploring different databases and tables with `duckdb`
 
+Note: th demo code in this repo is designed to illustrate the above points and will need to be heavily refactored before integrating into our monorepo.
+
 ### Background
 
 This demo focuses on `eth_emissions`. 
@@ -58,4 +60,55 @@ D SELECT table_name FROM information_schema.tables WHERE table_schema = 'main';
 # select first 10 rows from a specific table ('eth_emissions') within database (raw_data.db)
 
 D SELECT * FROM eth_emissions LIMIT 10;
+```
+
+### Data Extraction & Load
+
+Here we extract data from a Dune API endpoint (ETH emissions only) focusing only on raw **facts** of interest. We load the data into raw database _as is_. 
+
+Code 
+- `scripts/data_ingestion.py`
+- `data/bronze/raw_data.db`  # table: eth_emissions
+
+### Data Transformation
+
+Here we enrich the data with added **dimensions** (see above). We store enriched data in a separate database.
+
+Code
+- `scripts/data_enrichment.py`
+- `data/silver/transform_data.db` # table: eth_emissions_silver
+
+### Data Consumption 
+
+Here we add **aggregates** to the data, assuming that is what's needed for LLM consumption. The data ready-for-consumption is stored in the gold database. 
+
+Code
+- `scripts/data_preparation.py`
+- `data/gold/consumption_data.py`
+
+### Data Quality Checks
+
+Here we assume separate quality checks as data _progressively_ changes from bronze to silver to gold.
+
+Code
+- `test_data_quality_checks.py`         # for eth_emissions_silver
+- `test_data_quality_checks_gold.py`    # for eth_emissions_gold 
+
+
+### Exploration
+
+One mode of exploration are Jupyter notebooks, we can query across databases and tables:
+- `notebooks/exploration.ipynb`
+
+Another mode of exploration is the DuckDB CLI, here's a join of two databases (and two tables):
+
+```
+$ duckdb 
+
+D ATTACH DATABASE 'data/silver/transform_data.db' AS source_db;
+D ATTACH DATABASE 'data/gold/consumption_data.db' AS dest_db;
+D SELECT g.*, s.* FROM dest_db.eth_emissions_gold AS g
+		JOIN source_db.eth_emissions_silver AS s
+			ON s.datetime = g.datetime
+		 AND s.total_net_emission_eth = g.total;
 ```
