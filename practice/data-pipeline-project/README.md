@@ -15,7 +15,7 @@ This is a _demo repo_ that shows:
 - exploring different databases and tables with `jupyter notebooks`
 - alternatively, exploring different databases and tables with `duckdb`
 
-Note: th demo code in this repo is designed to illustrate the above points and will need to be heavily refactored before integrating into our monorepo.
+Note: the demo code in this repo is designed to simply illustrate the above points and will look very different in a monorepo context.
 
 ### Background
 
