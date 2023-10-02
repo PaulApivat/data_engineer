@@ -42,8 +42,8 @@ try:
         """
     )
 
-    # Define the date range from "May 30, 2022" to "September 26, 2023"
-    start_date = datetime.date(2022, 5, 30)
+    # Define the date range from "May 30, 2020" to "September 26, 2023"
+    start_date = datetime.date(2020, 5, 30)
     end_date = datetime.date(2023, 9, 26)
     current_date = start_date
     date_key = 0
