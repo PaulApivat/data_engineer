@@ -8,12 +8,18 @@ conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
 try:
-    # Drop the date_dimension table
-    cursor.execute("DROP TABLE IF EXISTS mcap_change")
+    # Insert data from mcap_fully_diluted into mcap_change
+    cursor.execute(
+        """
+        INSERT INTO mcap_change (datetime, value, project, date_key)
+        SELECT datetime, value, project, date_key
+        FROM mcap_fully_diluted
+        """
+    )
 
     # Commit the changes to the database
     conn.commit()
-    print("date_dimension table dropped successfully!")
+    print("Data copied from 'mcap_fully_diluted' to 'mcap_change' table successfully!")
 
 except sqlite3.Error as e:
     print("Error:", e)
