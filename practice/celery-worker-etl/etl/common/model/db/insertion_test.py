@@ -2,7 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os
 from .etl_reference_master_model import DigitalAssetMetric
+from .raw_model import RecordedRawMetric  # Import the model
 import sys
+from . import Base
 
 sys.path.append(
     "/Users/paulapivat/Desktop/local_github/data_engineer/practice/celery-worker-etl"
@@ -18,6 +20,9 @@ db_path = os.path.join(script_dir, "bronze.db")
 DATABASE_URL = f"sqlite:///{db_path}"  # Adjusted to point to the correct bronze.db
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
+
+# Create tables if they don't exist
+Base.metadata.create_all(engine)  # This will create all tables related to the models
 
 # Create a new session
 session = SessionLocal()
