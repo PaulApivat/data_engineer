@@ -18,7 +18,9 @@ class TestDuneAPI(unittest.TestCase):
     def test_wrapper_query(self):
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
-        query = QueryBase(name="samaple eth_emissions", query_id=3032256)
+        query = QueryBase(
+            name="samaple eth_emissions", query_id=3088161
+        )  # eth_emissions: 3032256 #eth_emissions_params: 3088161
         dune = DuneClient.from_env()
         results = dune.run_query(query)
         logger.info(results)
