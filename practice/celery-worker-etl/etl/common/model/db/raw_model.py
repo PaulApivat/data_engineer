@@ -13,20 +13,29 @@ logging.basicConfig()
 
 class RecordedRawMetric(Base, HasCreateTime):
     __tablename__ = "onchain_recorded_raw_metric"
-    metric_uuid = Column(String, ForeignKey(DigitalAssetMetric.uuid), nullable=False)
-    record_date = Column(DateTime(timezone=True), nullable=False)
-    value = Column(Float, index=False, nullable=False)
+    # Generate a unique UUID for each row
+    metric_uuid = Column(
+        String,
+        ForeignKey(DigitalAssetMetric.uuid),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+        unique=True,
+        nullable=False,
+    )
+    datetime = Column(DateTime(timezone=True), primary_key=True, nullable=False)
+    net_emission_eth = Column(Float, nullable=False)
+    total_net_emission_eth = Column(Float, nullable=False)
 
     # Adding ORM-style access to DigitalAssetMetric
     digital_asset_metric = relationship("DigitalAssetMetric")
 
-    def __init__(self, metric_uuid, record_date, value):
+    def __init__(self, datetime, net_emission_eth, total_net_emission_eth):
         super().__init__()
-        self.metric_uuid = str(metric_uuid)  # Convert UUID to string for SQLite
-        self.record_date = record_date
-        self.value = value
+        self.datetime = datetime
+        self.net_emission_eth = net_emission_eth
+        self.total_net_emission_eth = total_net_emission_eth
 
-    __mapper_args__ = {"primary_key": [metric_uuid, record_date]}
+    __mapper_args__ = {"primary_key": [metric_uuid, datetime]}
 
 
 # Ensure DigitalAssetMetric entries are inserted before RecordedRawMetric entries.

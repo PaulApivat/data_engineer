@@ -41,13 +41,12 @@ def handle_query(metric, start_date, end_date):
         insert_or_update_values = []
         for row in result_rows:
             db_metric = RecordedRawMetric(
-                metric_uuid=metric.uuid,
-                record_date=datetime.strptime(
-                    row["datetime"], "%Y-%m-%d %H:%M:%S.%f %Z"
-                ),
-                value=row[
-                    "net_emission_eth"
-                ],  # Adjust based on how your result is structured
+                # Unique UUID is auto-generated, no need to set metric_uuid here
+                datetime=datetime.strptime(row["datetime"], "%Y-%m-%d %H:%M:%S.%f %Z"),
+                net_emission_eth=row["net_emission_eth"],  # Adjusted column name
+                total_net_emission_eth=row[
+                    "total_net_emission_eth"
+                ],  # Added new column data
             )
             insert_or_update_values.append(db_metric)
 

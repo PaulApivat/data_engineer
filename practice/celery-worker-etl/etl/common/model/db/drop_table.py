@@ -9,11 +9,11 @@ cursor = conn.cursor()
 
 try:
     # Drop the date_dimension table
-    cursor.execute("DROP TABLE IF EXISTS digital_asset_metric")
+    cursor.execute("DROP TABLE IF EXISTS onchain_recorded_raw_metric")
 
     # Commit the changes to the database
     conn.commit()
-    print("digital_asset_metric table dropped successfully!")
+    print("onchain_recorded_raw_metric table dropped successfully!")
 
 except sqlite3.Error as e:
     print("Error:", e)
