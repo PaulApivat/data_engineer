@@ -17,13 +17,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.getenv("DUNE_API_KEY")
-
-# 1. Initiate a database session
 Session = sessionmaker(bind=engine)
 session = Session()
 
 
-def handle_query(metric, start_date, end_date):
+def handle_query(metric, your_start_date, your_end_date):
+    # initiation session at start of function
+
     # 2. Run the external API call
     dune = DuneClient(api_key)
 
@@ -72,7 +72,7 @@ if not your_metric:
 
 # Define your start and end dates:
 your_start_date = "2023-09-01"  # adjust as needed
-your_end_date = "2023-10-06"  # adjust as needed
+your_end_date = "2023-10-01"  # adjust as needed
 
 # To run the function:
 handle_query(your_metric, your_start_date, your_end_date)
