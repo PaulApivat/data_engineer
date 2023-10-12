@@ -34,6 +34,16 @@ def main():
     results = dune.run_query(query)
     logger.info(results)
 
+    # Access data directly from the ResultsResponse object
+    if results.result:
+        metadata = results.result.metadata
+        print("Metadata:", metadata)
+        print("Result Set Bytes:", metadata.result_set_bytes)
+        print("Total Row Count:", metadata.total_row_count)
+        print("Data Point Count:", metadata.datapoint_count)
+    else:
+        print("Results not found in the response.")
+
 
 if __name__ == "__main__":
     main()
