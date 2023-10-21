@@ -64,7 +64,44 @@ def main():
 
                 # Get the execution results
                 execution_results = execution_api.get_execution_results(execution_id)
+                print("\n")
                 print("Execution Results:", execution_results)
+                print("\n")
+                print("Execution ID: ", execution_id)
+                print("execution_id: ", execution_results.execution_id)
+                print("query_id: ", execution_results.query_id)
+                print("state: ", execution_results.state)
+                print("submitted_at: ", execution_results.times.submitted_at)
+                print("expires_at: ", execution_results.times.expires_at)
+                print(
+                    "execution_started_at: ",
+                    execution_results.times.execution_started_at,
+                )
+                print(
+                    "execution_ended_at: ", execution_results.times.execution_ended_at
+                )
+                print("result_metadata: ", execution_results.result.metadata)
+                print(
+                    "result_set_bytes: ",
+                    execution_results.result.metadata.result_set_bytes,
+                )
+                print(
+                    "total_row_count: ",
+                    execution_results.result.metadata.total_row_count,
+                )
+                print(
+                    "datapoint_count: ",
+                    execution_results.result.metadata.datapoint_count,
+                )
+                print(
+                    "pending_time_millis: ",
+                    execution_results.result.metadata.pending_time_millis,
+                )
+                print(
+                    "execution_time_millis: ",
+                    execution_results.result.metadata.execution_time_millis,
+                )
+                print("\n")
                 break  # Query execution is complete, exit the loop
 
             elif execution_status.state == ExecutionState.FAILED:
