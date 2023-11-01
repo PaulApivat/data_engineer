@@ -73,7 +73,9 @@ while True:
     df = pd.DataFrame(proposals)
 
     # Print the DataFrame
-    print(df)
+    print(df["start"], df["end"], df["created"])
+    print("\n")
+    print(df.dtypes)
 
     # Increment skip for pagination
     skip += first
