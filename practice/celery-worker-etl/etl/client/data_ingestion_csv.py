@@ -3,7 +3,7 @@ import sqlite3
 import requests
 import pandas as pd
 from dotenv import load_dotenv
-from io import StringIO  # Added import for handling CSV data
+from io import StringIO
 
 # Load environment variables from .env file
 load_dotenv()
@@ -38,11 +38,11 @@ response = requests.get(api_url)
 
 if response.status_code == 200:
     # Assuming the API response is in CSV format
-    data_csv = response.text  # Get the CSV data as text
-    print(data_csv)
+    data_csv = response.text
 
     # Use StringIO to convert CSV data into a DataFrame
-    df = pd.read_csv(StringIO(data_csv), names=column_names, header=None)
+    df = pd.read_csv(StringIO(data_csv))
+    print("print df...", df)
 
     # Establish a connection to the SQLite database (creating it if not exists)
     db_path = "raw_bronze.db"
@@ -66,22 +66,16 @@ if response.status_code == 200:
             max_fees_usd_4w REAL,
             min_fees_usd_4w REAL,
             max_fees_usd_26w REAL,
-            min_fees_usd_26w REAL,
-            project_name TEXT,
-            project_symbol TEXT,
-            project_category TEXT
+            min_fees_usd_26w REAL
         )
-    """
+        """
     )
 
     # Insert the data from the DataFrame into the SQLite table
     for _, row in df.iterrows():
-        # Add project details to each row
-        row = row.tolist()
-        row.extend(["Ethereum", "ETH", "L1"])  # Modify project details as needed
         conn.execute(
-            "INSERT INTO eth_fees (datetime, fees_usd, fees_usd_1w_ago, fees_usd_1w_change, fees_usd_4w_ago, fees_usd_4w_change, fees_usd_26w_ago, fees_usd_26w_change, avg_fees_usd_4w, avg_fees_usd_26w, max_fees_usd_4w, min_fees_usd_4w, max_fees_usd_26w, min_fees_usd_26w, project_name, project_symbol, project_category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            tuple(row),
+            "INSERT INTO eth_fees_csv (datetime, fees_usd, fees_usd_1w_ago, fees_usd_1w_change, fees_usd_4w_ago, fees_usd_4w_change, fees_usd_26w_ago, fees_usd_26w_change, avg_fees_usd_4w, avg_fees_usd_26w, max_fees_usd_4w, min_fees_usd_4w, max_fees_usd_26w, min_fees_usd_26w) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            tuple(row[:14]),  # Exclude the additional fields
         )
 
     # Commit changes and close the SQLite connection
