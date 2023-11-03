@@ -95,6 +95,7 @@ def fetch_and_print_votes(proposal_id):
     # Extract and print votes
     votes = data.get("data", {}).get("votes", [])
     df = pd.DataFrame(votes)
+    df["proposal_id"] = proposal_id
     print("Votes for Proposal ID:", proposal_id)
     print(df)
     print("\n")
