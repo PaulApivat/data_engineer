@@ -6,3 +6,6 @@
 
 # pylint
 .pylintrc
+
+# DS_Store
+.DS_Store
