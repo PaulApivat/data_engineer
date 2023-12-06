@@ -13,10 +13,11 @@ def print_keys_at_level(data, level=1):
 
 
 url = (
-    # "https://dao.rocketpool.net/t/about-the-liquid-staking-experience-category/210.json"
-    # "https://dao.rocketpool.net/c/liquid-staking-experience/14.json"
-    # "https://dao.rocketpool.net/c/governance/8.json"
-    "https://dao.rocketpool.net/t/rpl-staking-rework-proposal/2090.json"
+    # "https://dao.rocketpool.net/t/about-the-liquid-staking-experience-category/210.json" # single thread
+    # "https://dao.rocketpool.net/c/liquid-staking-experience/14.json" # single category
+    # "https://dao.rocketpool.net/c/governance/8.json" # single category
+    # "https://dao.rocketpool.net/t/rpl-staking-rework-proposal/2090.json" # single topic
+    "https://dao.rocketpool.net/top.json"  # category by top
 )
 
 response = requests.get(url)
