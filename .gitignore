@@ -8,4 +8,7 @@
 .pylintrc
 
 # DS_Store
-.DS_Store
+.DS_Store 
+
+# SQLite database
+practice/discourse/rocketpool/pipeline/rocketpool.db
