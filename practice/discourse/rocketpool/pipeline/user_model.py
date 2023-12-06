@@ -9,7 +9,8 @@ Base = declarative_base()
 
 
 class ProtocolUsers(Base):
-    __tablename__ = "protocol_users"
+    # __tablename__ = "protocol_users"
+    __tablename__ = "protocol_users_all"
     id = Column(Integer, primary_key=True)
     username = Column(String)
     name = Column(String)
@@ -25,7 +26,8 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 # Fetch Data
-url = "https://dao.rocketpool.net/top.json"
+# url = "https://dao.rocketpool.net/top.json"
+url = "https://dao.rocketpool.net/top.json?period=all"
 response = requests.get(url)
 if response.status_code == 200:
     json_data = response.json()
