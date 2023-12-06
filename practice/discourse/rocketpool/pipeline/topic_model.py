@@ -9,8 +9,8 @@ Base = declarative_base()
 
 
 class ProtocolTopics(Base):
-    # __tablename__ = "protocol_topics"
-    __tablename__ = "protocol_topics_all"
+    __tablename__ = "protocol_topics"
+    # __tablename__ = "protocol_topics_all"
     id = Column(Integer, primary_key=True)
     slug = Column(String)
     title = Column(String)
@@ -27,8 +27,8 @@ engine = create_engine("sqlite:///rocketpool.db")
 Base.metadata.create_all(engine)
 
 # Fetch Data
-# url = "https://dao.rocketpool.net/top.json"
-url = "https://dao.rocketpool.net/top.json?period=all"
+url = "https://dao.rocketpool.net/top.json"
+# url = "https://dao.rocketpool.net/top.json?period=all"
 response = requests.get(url)
 if response.status_code == 200:
     json_data = response.json()
