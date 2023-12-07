@@ -10,7 +10,6 @@ Base = declarative_base()
 
 class ProtocolTopics(Base):
     __tablename__ = "protocol_topics"
-    # __tablename__ = "protocol_topics_all"
     id = Column(Integer, primary_key=True)
     slug = Column(String)
     title = Column(String)

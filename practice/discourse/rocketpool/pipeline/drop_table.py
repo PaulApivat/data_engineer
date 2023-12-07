@@ -10,11 +10,11 @@ cursor = conn.cursor()
 
 try:
     # Drop the date_dimension table
-    cursor.execute("DROP TABLE IF EXISTS protocol_topics_post")
+    cursor.execute("DROP TABLE IF EXISTS protocol_topics_all")
 
     # Commit the changes to the database
     conn.commit()
-    print("protocol_topics_post table dropped successfully!")
+    print("protocol_topics_all table dropped successfully!")
 
 except sqlite3.Error as e:
     print("Error:", e)
