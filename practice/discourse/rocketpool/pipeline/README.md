@@ -57,6 +57,18 @@ continue:
 
 ![rocketpool_db_model_2](png/rocketpool_db_model_2.png)
 
+### Creating SQLite database
+
+To create `rocketpool.db`, run the following commands (**note**: order matters where Posts rely on Topic tables for their creation so the `protocol_topics` table should be created before `protocol_topic_posts` table.)
+
+Recommended order:
+
+- category: `python -m category_model`
+- topic: `python -m topic_model`
+- post: `python -m post_model`
+    - note: `create_post_urls.py` is already contained in `post_model.py` (running `post_model.py` first will print out the concatenated post URLs)
+- user: `python -m user_model`
+
 ### Options
 
 In terms of data extraction there are two primary options:
