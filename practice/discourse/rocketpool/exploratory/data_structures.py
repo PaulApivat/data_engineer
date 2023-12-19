@@ -17,8 +17,9 @@ url = (
     # "https://dao.rocketpool.net/c/liquid-staking-experience/14.json" # single category
     # "https://dao.rocketpool.net/c/governance/8.json" # single category
     # "https://dao.rocketpool.net/t/rpl-staking-rework-proposal/2090.json"  # single topic
+    "https://dao.rocketpool.net/t/rpl-staking-rework-proposal/2090.json?page=1"  # single topic w page=x
     # "https://dao.rocketpool.net/top.json"  # category by top
-    "https://dao.rocketpool.net/categories.json"
+    # "https://dao.rocketpool.net/categories.json"
 )
 
 response = requests.get(url)
