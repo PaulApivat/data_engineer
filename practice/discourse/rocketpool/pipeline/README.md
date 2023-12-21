@@ -69,12 +69,32 @@ Recommended order:
     - note: `create_post_urls.py` is already contained in `post_model.py` (running `post_model.py` first will print out the concatenated post URLs)
 - user: `python -m user_model`
 
-### Options
+### Lack of Native Pagination Support
 
-In terms of data extraction there are two primary options:
+discourse.org does not support native pagination despite repeated community requests over the years. These links provide background context ([July 2022](https://meta.discourse.org/t/is-pagination-impossible-or-just-hard/231838), [Nov 2023](https://meta.discourse.org/t/pagination-needed-for-post-or-topic-section/284921), [Dec 2023](https://meta.discourse.org/t/infinite-scrolling-on-homepage/288194/5))
 
-1. The `.json` approach
+Instead, discourse.org favors infinite scrolling. However, when using the `.json` approach for data extraction a web requests can only fetch a limited response. 
 
-2. Web scraping 
+### Pagination with Pages
 
-Eventually, we'll likely need to implement an asynchronous approach to collecting data (web scraping), but it may serve us well to start off with the `.json` (and try different variations) to clearly define  what data is **most valuable** for our business or customer acquisition objectives. 
+The good news is we can use the `page` parameter to create a **paginated URL**. 
+
+For example, this:
+
+url = f"https://dao.rocketpool.net/top.json"
+
+becomes this:
+
+paginated_url = f"https://dao.rocketpool.net/top.json?period=all&page={page}"
+
+#### Page Index
+
+Using the `page` parameter allows us to create a while-loop through all available page. Paired with the `period=all` parameter, we can get _all_ topics across categories. Currently, we have successful implementation for:
+
+- topics (page index starts at 0)
+- topic_posts (page index starts at 1)
+- users (same as topic)
+
+### New Data
+
+Now that we have a rough working approach to pagination, we need a way to acquire and insert new data. 
