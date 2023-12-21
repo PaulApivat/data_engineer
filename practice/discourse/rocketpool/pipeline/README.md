@@ -49,6 +49,8 @@ All depending on **what kind of data is needed for what purpose**.
 
 ### Data Model
 
+**NOTE**: This section will be updated to add the `page` attribute for each model
+
 Here's a visual database model for Rocket Pool's discourse forum data:
 
 ![rocketpool_db_model](png/rocketpool_db_model.png)
@@ -58,6 +60,8 @@ continue:
 ![rocketpool_db_model_2](png/rocketpool_db_model_2.png)
 
 ### Creating SQLite database
+
+**NOTE**: This section will be updated to account for the `page` and `period` parameters for pagination.
 
 To create `rocketpool.db`, run the following commands (**note**: order matters where Posts rely on Topic tables for their creation so the `protocol_topics` table should be created before `protocol_topic_posts` table.)
 
@@ -69,7 +73,7 @@ Recommended order:
     - note: `create_post_urls.py` is already contained in `post_model.py` (running `post_model.py` first will print out the concatenated post URLs)
 - user: `python -m user_model`
 
-### Lack of Native Pagination Support
+### Infinite Scrolling
 
 discourse.org does not support native pagination despite repeated community requests over the years. These links provide background context ([July 2022](https://meta.discourse.org/t/is-pagination-impossible-or-just-hard/231838), [Nov 2023](https://meta.discourse.org/t/pagination-needed-for-post-or-topic-section/284921), [Dec 2023](https://meta.discourse.org/t/infinite-scrolling-on-homepage/288194/5))
 
@@ -89,12 +93,29 @@ paginated_url = f"https://dao.rocketpool.net/top.json?period=all&page={page}"
 
 #### Page Index
 
-Using the `page` parameter allows us to create a while-loop through all available page. Paired with the `period=all` parameter, we can get _all_ topics across categories. Currently, we have successful implementation for:
+Using the `page` parameter allows us to create a while-loop through all available page. Paired with the `period=all` parameter, we can get _all_ topics across categories. Currently, we have successful implementation for (**note**: work-in-progress, some kinks to work out):
 
-- topics (page index starts at 0)
-- topic_posts (page index starts at 1)
-- users (same as topic)
+- topics 
+- topic_posts 
+- users
 
 ### New Data
 
-Now that we have a rough working approach to pagination, we need a way to acquire and insert new data. 
+Now that we have a rough working approach to pagination, we need a way to acquire and insert new data.
+The approach i'm currently taking is to leverage a combination of **last page** and **updated_at** to start fetching data, then checking against existing topic_post `id` or inserting a new post. 
+
+I'm experimenting by manually deleting specific posts, then re-running the pipeline to see if I can ingest those only (i.e., `ids`: 4755, 4791, 6112). 
+
+I'm able to re-ingest deleted posts, however further testing is needed. 
+
+### Options
+
+The challenge of running pipelines to fetch the latest discourse forum post involves a couple factors:
+1. The topic threads differ in length (i.e. `page`)
+2. The topic threads differ in last updated (i.e., `updated_at`)
+
+Some options for running pipelines to fetch new data include:
+1. Fetch all posts within a recent time frame
+2. Check for gaps in post ids
+3. Fetch data for specific topic threads (more active threads)
+4. Combining strategies
