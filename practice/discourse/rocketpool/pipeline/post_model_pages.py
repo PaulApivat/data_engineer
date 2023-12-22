@@ -71,9 +71,9 @@ Session = sessionmaker(bind=engine)
 
 # Function to fetch data from a paginated URL
 def fetch_paginated_data(base_url):
-    page = 1
+    page = 0
     while True:
-        paginated_url = f"{base_url}?page={page}"
+        paginated_url = f"{base_url}?period=all&page={page}"
         response = requests.get(paginated_url)
         if response.status_code != 200:
             break
@@ -96,42 +96,50 @@ for base_url in urls:
         # Process each JSON response and insert data into the database
         session = Session()
         posts_data = json_data.get("post_stream", {}).get("posts", [])
+
         for post in posts_data:
-            try:
-                post_entry = ProtocolTopicsPost(
-                    id=post.get("id"),
-                    name=post.get("name"),
-                    username=post.get("username"),
-                    created_at=datetime.datetime.fromisoformat(
-                        post["created_at"].rstrip("Z")
+            # Check if the post already exists
+            existing_post = (
+                session.query(ProtocolTopicsPost).filter_by(id=post["id"]).one_or_none()
+            )
+
+            if not existing_post:
+                # Insert new post only if it does not exist
+                try:
+                    post_entry = ProtocolTopicsPost(
+                        id=post.get("id"),
+                        name=post.get("name"),
+                        username=post.get("username"),
+                        created_at=datetime.datetime.fromisoformat(
+                            post["created_at"].rstrip("Z")
+                        )
+                        if post.get("created_at")
+                        else None,
+                        cooked=post.get("cooked"),
+                        post_number=post.get("post_number"),
+                        reply_to_post_number=post.get("reply_to_post_number"),
+                        updated_at=datetime.datetime.fromisoformat(
+                            post["updated_at"].rstrip("Z")
+                        )
+                        if post.get("updated_at")
+                        else None,
+                        incoming_link_count=post.get("incoming_link_count"),
+                        reads=post.get("reads"),
+                        readers_count=post.get("readers_count"),
+                        score=post.get("score"),
+                        topic_id=post.get("topic_id"),
+                        topic_slug=post.get("topic_slug"),
+                        user_id=post.get("user_id"),
+                        user_title=post.get("user_title"),
+                        trust_level=post.get("trust_level"),
+                        moderator=post.get("moderator"),
+                        admin=post.get("admin"),
+                        staff=post.get("staff"),
+                        stream=post.get("stream"),
+                        page=page,  # Set the page number
                     )
-                    if post.get("created_at")
-                    else None,
-                    cooked=post.get("cooked"),
-                    post_number=post.get("post_number"),
-                    reply_to_post_number=post.get("reply_to_post_number"),
-                    updated_at=datetime.datetime.fromisoformat(
-                        post["updated_at"].rstrip("Z")
-                    )
-                    if post.get("updated_at")
-                    else None,
-                    incoming_link_count=post.get("incoming_link_count"),
-                    reads=post.get("reads"),
-                    readers_count=post.get("readers_count"),
-                    score=post.get("score"),
-                    topic_id=post.get("topic_id"),
-                    topic_slug=post.get("topic_slug"),
-                    user_id=post.get("user_id"),
-                    user_title=post.get("user_title"),
-                    trust_level=post.get("trust_level"),
-                    moderator=post.get("moderator"),
-                    admin=post.get("admin"),
-                    staff=post.get("staff"),
-                    stream=post.get("stream"),
-                    page=page,  # Set the page number
-                )
-                session.add(post_entry)
-            except Exception as e:
-                print(f"Error inserting post data: {e}")
+                    session.add(post_entry)
+                except Exception as e:
+                    print(f"Error inserting post data: {e}")
         session.commit()
         session.close()

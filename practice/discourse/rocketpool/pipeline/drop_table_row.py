@@ -4,7 +4,7 @@ import sqlite3
 db_path = "rocketpool.db"
 
 # Specify the id of the row to be deleted
-row_id_to_delete = 4791  # Replace with the actual id
+row_id_to_delete = 6112  # Replace with the actual id
 
 # Create a connection to the database
 conn = sqlite3.connect(db_path)

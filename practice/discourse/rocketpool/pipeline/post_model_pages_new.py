@@ -73,10 +73,10 @@ Session = sessionmaker(bind=engine)
 
 
 # Function to fetch data from a paginated URL
-def fetch_paginated_data(base_url, start_page=1):
+def fetch_paginated_data(base_url, start_page=0):
     page = start_page
     while True:
-        paginated_url = f"{base_url}?page={page}"
+        paginated_url = f"{base_url}?period=all&page={page}"
         response = requests.get(paginated_url)
         if response.status_code != 200:
             break
