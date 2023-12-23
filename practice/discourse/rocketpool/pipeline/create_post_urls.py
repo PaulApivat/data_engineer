@@ -5,7 +5,7 @@ engine = create_engine("sqlite:///rocketpool.db")
 
 # Query the database directly with raw SQL
 with engine.connect() as connection:
-    result = connection.execute(text("SELECT id, slug FROM protocol_topics"))
+    result = connection.execute(text("SELECT id, slug FROM protocol_topics_pages"))
 
     # Construct URLs and store them in a list
     # Note: result rows are tuples, so use indices to access elements
