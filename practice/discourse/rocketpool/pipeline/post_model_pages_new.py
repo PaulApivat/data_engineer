@@ -115,7 +115,7 @@ new_posts_count = 0  # Counter for new posts
 
 # Adjust the URL fetching loop to start from an earlier page
 start_fetching_from = max(
-    last_page - 6, 0
+    last_page - 5, 0
 )  # Start from 3 pages earlier, or 0 if last_page is too small
 
 # Adjust the URL fetching loop to start from the last page
