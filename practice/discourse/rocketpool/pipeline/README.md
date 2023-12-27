@@ -47,9 +47,9 @@ continue:
 
 ![rocketpool_db_model_2](png/rocketpool_db_model_2.png)
 
-### Creating SQLite database
+### Running the Pipeline
 
-To create `rocketpool.db`, run the following commands (**note**: order matters where the `protocol_topics_post_pages` tables rely on the `protocol_topics_pages` tables for their creation so the latter should be created first.)
+Running the pipeline creates a SQLite database: `rocketpool.db`, run the following commands (**note**: order matters where the `protocol_topics_post_pages` table relies on the `protocol_topics_pages` table for its creation, so the latter should be created first.)
 
 Recommended order:
 
