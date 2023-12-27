@@ -2,11 +2,16 @@
 
 ### Overview
 
-This repo contains exploratory and pipeline related scripts for navigating **Rocket Pool Discourse** data, creating initial data models and an initial pipeline for ingesting data for further processing. There is a SQLite database **rocketpool.db** that contains tables for discourse `categories`, `topics`, `posts` and `users`.
+This repo contains exploratory and pipeline related scripts for navigating **Rocket Pool Discourse** data, creating initial data models and an initial pipeline for ingesting data for further processing. There is a SQLite database **rocketpool.db** that contains tables for discourse `categories`, `topics`, `posts` and `users`. The tables to reference are:
+
+- protocol_categories
+- protocol_users_pages
+- protocol_topics_pages
+- protocol_topics_post_pages
 
 The database is **not** pushed into version control as it contains potentially *confidential* user data. 
 
-The `pipeline` folder contains various scripts for creating SQLalchemy models. 
+The `pipeline` folder contains various scripts for creating SQLalchemy models and logic for the data pipeline.
 
 ### Discourse Data
 
@@ -28,30 +33,13 @@ So far data has been extracted by appending `.json` to the end of a URL for exam
 
 `https://dao.rocketpool.net/top.json`
 
-For initial extraction, I've used the above URL to gather User, Topic and Post data. For Categories, I've used:
+While we could filter by 'latest', we assume that filtering by 'top' will yield more relevant data.
 
-`https://dao.rocketpool.net/categories.json`
-
-This allow for an initial dataset filtered by Posts with the most Views/Replies. There are *alternatives* including filter by individual categories...
-
-`https://dao.rocketpool.net/c/liquid-staking-experience/14.json`
-
-...filtering by a single topic (thread)...
-
-`https://dao.rocketpool.net/t/rpl-staking-rework-proposal/2090.json`
-
-
-...the latest (most recent) posts (even latest within a category)...
-
-`https://dao.rocketpool.net/latest.json`
-
-All depending on **what kind of data is needed for what purpose**. 
 
 ### Data Model
 
-**NOTE**: This section will be updated to add the `page` attribute for each model
+Here's a visual database model for Rocket Pool's discourse forum data. An additional "page" attribute has been added to `users`, `topics` and `topic posts` to **paginate** through the data (see next section).
 
-Here's a visual database model for Rocket Pool's discourse forum data:
 
 ![rocketpool_db_model](png/rocketpool_db_model.png)
 
@@ -61,17 +49,14 @@ continue:
 
 ### Creating SQLite database
 
-**NOTE**: This section will be updated to account for the `page` and `period` parameters for pagination.
-
-To create `rocketpool.db`, run the following commands (**note**: order matters where Posts rely on Topic tables for their creation so the `protocol_topics` table should be created before `protocol_topic_posts` table.)
+To create `rocketpool.db`, run the following commands (**note**: order matters where the `protocol_topics_post_pages` tables rely on the `protocol_topics_pages` tables for their creation so the latter should be created first.)
 
 Recommended order:
 
 - category: `python -m category_model`
-- topic: `python -m topic_model`
-- post: `python -m post_model`
-    - note: `create_post_urls.py` is already contained in `post_model.py` (running `post_model.py` first will print out the concatenated post URLs)
-- user: `python -m user_model`
+- user: `python -m user_model_pages`
+- topic: `python -m topic_model_pages`
+- post: `python -m topic_post_pipeline`
 
 ### Infinite Scrolling
 
@@ -93,7 +78,7 @@ paginated_url = f"https://dao.rocketpool.net/top.json?period=all&page={page}"
 
 #### Page Index
 
-Using the `page` parameter allows us to create a while-loop through all available page. Paired with the `period=all` parameter, we can get _all_ topics across categories. Currently, we have successful implementation for (**note**: work-in-progress, some kinks to work out):
+Using the `page` parameter allows us to create a while-loop through all available page. Paired with the `period=all` parameter, we can get _all_ topics since inception of a discourse forum. Currently, we have successful implementation for
 
 - topics 
 - topic_posts 
@@ -106,15 +91,16 @@ The approach i'm currently taking is to leverage a combination of **last page** 
 
 I'm experimenting by manually deleting specific posts, then re-running the pipeline to see if I can ingest those only (i.e., `ids`: 4755, 4791, 6112). 
 
-I'm able to re-ingest deleted posts, however further testing is needed. 
 
-### Options
+### Rate Limits 
+
+To deal with rate limiting (i.e., `status code 429`) the `topic_post_pipeline.py` we've implemnted **exponential backoff** into the pipeline. The pipeline can be adjusted to account for the last *page* a topic thread has to ingest any *new* post.
 
 The challenge of running pipelines to fetch the latest discourse forum post involves a couple factors:
 1. The topic threads differ in length (i.e. `page`)
 2. The topic threads differ in last updated (i.e., `updated_at`)
 
-Some options for running pipelines to fetch new data include:
+Other options for running pipelines to fetch new data include:
 1. Fetch all posts within a recent time frame
 2. Check for gaps in post ids
 3. Fetch data for specific topic threads (more active threads)
